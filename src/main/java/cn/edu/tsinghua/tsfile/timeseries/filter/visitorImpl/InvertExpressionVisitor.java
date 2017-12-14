@@ -6,7 +6,7 @@ import cn.edu.tsinghua.tsfile.timeseries.filter.definition.SingleSeriesFilterExp
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.*;
 
 /**
- * Invert(FilterExpression) = Not(FilterExpression)
+ * Invert(Filter) = Not(Filter)
  * Implemented using visitor pattern.
  *
  * @author CGF

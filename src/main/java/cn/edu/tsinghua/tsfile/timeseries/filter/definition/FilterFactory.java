@@ -194,7 +194,7 @@ public final class FilterFactory {
     }
 
     /**
-     * construct CSAnd(Cross Series Filter And Operators) use FilterExpression
+     * construct CSAnd(Cross Series Filter And Operators) use Filter
      * left, right;
      *
      * @param left left expression
@@ -206,7 +206,7 @@ public final class FilterFactory {
     }
 
     /**
-     * construct CSOr(Cross Series Filter Or Operators) use FilterExpression
+     * construct CSOr(Cross Series Filter Or Operators) use Filter
      * left, right;
      *
      * @param left left expression

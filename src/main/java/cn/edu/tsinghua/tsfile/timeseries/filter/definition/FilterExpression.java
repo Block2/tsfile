@@ -4,16 +4,16 @@ import cn.edu.tsinghua.tsfile.timeseries.filter.definition.filterseries.FilterSe
 import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.FilterVisitor;
 
 /**
- * FilterExpression is a top level filter abstraction.
- * FilterExpression has two types of subclass : {@link SingleSeriesFilterExpression} and
+ * Filter is a top level filter abstraction.
+ * Filter has two types of subclass : {@link SingleSeriesFilterExpression} and
  * {@link CrossSeriesFilterExpression}
- * FilterExpression is a role of interviewee in visitor pattern.
+ * Filter is a role of interviewee in visitor pattern.
  *
  * @author CGF
  */
 public interface FilterExpression {
     /**
-     * All subclass of accept a FilterVisitor, per the visitor pattern
+     * All subclass of accept a NormalFilterVisitor, per the visitor pattern
      * @param visitor filter visitor
      * @param <T> return type
      * @return corret filter

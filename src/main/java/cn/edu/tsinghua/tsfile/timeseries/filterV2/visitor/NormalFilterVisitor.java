@@ -1,6 +1,7 @@
-package cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl;
+package cn.edu.tsinghua.tsfile.timeseries.filterV2.visitor;
 
-import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.*;
+
+import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.impl.*;
 
 /**
  * NormalFilterVisitor is implemented by visitor pattern.
@@ -11,7 +12,7 @@ import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.*;
  *
  * @author CGF
  */
-public interface FilterVisitor<R> {
+public interface NormalFilterVisitor<R> {
 
     <T extends Comparable<T>> R visit(Eq<T> eq);
 
@@ -21,11 +22,15 @@ public interface FilterVisitor<R> {
 
     <T extends Comparable<T>> R visit(GtEq<T> gtEq);
 
+    <T extends Comparable<T>> R visit(Gt<T> gtEq);
+
+    <T extends Comparable<T>> R visit(Lt<T> gtEq);
+
     R visit(Not not);
 
     R visit(And and);
 
     R visit(Or or);
 
-    R visit(NoFilter noFilter);
+    R visit(NoRestriction noFilter);
 }

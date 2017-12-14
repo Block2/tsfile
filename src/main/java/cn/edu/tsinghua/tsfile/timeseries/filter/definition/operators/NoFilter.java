@@ -5,7 +5,7 @@ import cn.edu.tsinghua.tsfile.timeseries.filter.definition.filterseries.FilterSe
 import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.FilterVisitor;
 
 /**
- * <code>NoFilter</code> means that there is no filter.
+ * <code>NoRestriction</code> means that there is no filter.
  */
 public class NoFilter extends SingleSeriesFilterExpression{
     private static NoFilter noFilter;
