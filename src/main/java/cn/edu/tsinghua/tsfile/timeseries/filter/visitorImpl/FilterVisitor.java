@@ -3,11 +3,11 @@ package cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.*;
 
 /**
- * NormalFilterVisitor is implemented by visitor pattern.
+ * NormalFilterExpressionVisitor is implemented by visitor pattern.
  * Implemented using visitor pattern.
  *
  * A FilterVistor must visit all these methods below, per visitor design pattern.
- * And a Filter just need implements an accept() method.
+ * And a FilterExpression just need implements an accept() method.
  *
  * @author CGF
  */

@@ -13,7 +13,7 @@ import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.FilterVisitor;
  */
 public interface FilterExpression {
     /**
-     * All subclass of accept a NormalFilterVisitor, per the visitor pattern
+     * All subclass of accept a NormalFilterExpressionVisitor, per the visitor pattern
      * @param visitor filter visitor
      * @param <T> return type
      * @return corret filter
