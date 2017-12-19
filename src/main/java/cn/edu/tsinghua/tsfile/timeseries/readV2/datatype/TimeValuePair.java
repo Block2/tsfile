@@ -7,6 +7,11 @@ public class TimeValuePair {
     private long timestamp;
     private TsPrimitiveType value;
 
+    public TimeValuePair(long timestamp, TsPrimitiveType value){
+        this.timestamp = timestamp;
+        this.value = value;
+    }
+
     public long getTimestamp() {
         return timestamp;
     }

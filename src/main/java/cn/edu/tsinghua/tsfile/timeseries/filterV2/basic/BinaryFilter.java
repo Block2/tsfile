@@ -1,4 +1,4 @@
-package cn.edu.tsinghua.tsfile.timeseries.filterV2.expression;
+package cn.edu.tsinghua.tsfile.timeseries.filterV2.basic;
 
 
 import java.io.Serializable;
@@ -32,5 +32,4 @@ public abstract class BinaryFilter<T extends Comparable<T>> implements Filter<T>
     public String toString() {
         return "( " + left + "," + right + " )";
     }
-
 }

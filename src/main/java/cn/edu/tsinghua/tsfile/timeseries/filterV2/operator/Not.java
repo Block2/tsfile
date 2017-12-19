@@ -1,8 +1,8 @@
-package cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.impl;
+package cn.edu.tsinghua.tsfile.timeseries.filterV2.operator;
 
-import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.Filter;
-import cn.edu.tsinghua.tsfile.timeseries.filterV2.visitor.NormalFilterVisitor;
-import cn.edu.tsinghua.tsfile.timeseries.filterV2.visitor.ValueFilterVisitor;
+import cn.edu.tsinghua.tsfile.timeseries.filterV2.basic.Filter;
+import cn.edu.tsinghua.tsfile.timeseries.filterV2.visitor.TimeValuePairFilterVisitor;
+import cn.edu.tsinghua.tsfile.timeseries.readV2.datatype.TimeValuePair;
 
 import java.io.Serializable;
 
@@ -21,12 +21,7 @@ public class Not<T extends Comparable<T>> implements Filter<T>, Serializable {
     }
 
     @Override
-    public <T> T accept(NormalFilterVisitor<T> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public <R> R accept(T value, ValueFilterVisitor<R> visitor) {
+    public <R> R accept(TimeValuePair value, TimeValuePairFilterVisitor<R> visitor) {
         return visitor.visit(value, this);
     }
 

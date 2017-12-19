@@ -71,7 +71,7 @@ public abstract class CrossQueryTimeGenerator {
     }
 
     /**
-     * Calculate common time using Filter.
+     * Calculate common time using FilterExpression.
      * @return common time
      * @throws ProcessorException exception in query processor
      * @throws IOException exception in IO

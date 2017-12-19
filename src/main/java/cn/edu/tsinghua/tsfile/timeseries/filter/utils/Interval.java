@@ -1,9 +1,9 @@
 package cn.edu.tsinghua.tsfile.timeseries.filter.utils;
 
 /**
- * used for filter optimization for example, Filter And(And(GtEq(10), LtEq(20)),
+ * used for filter optimization for example, FilterExpression And(And(GtEq(10), LtEq(20)),
  * And(GtEq(30), LtEq(40))), when we use SingleValueVistor, to examine whether a value satisfy the
- * Filter, we need invoke the filter comparison methods (generic transform) at most 7
+ * FilterExpression, we need invoke the filter comparison methods (generic transform) at most 7
  * times, but the basic type comparison(int, long, float, double) will cost less time than generic
  * transform, so we can transform Or(And(GtEq(10), LtEq(20)), And(GtEq(30), LtEq(40))) to an array,
  * v[0]=10, v[1]=20, v[2]=30, v[3]=40.
