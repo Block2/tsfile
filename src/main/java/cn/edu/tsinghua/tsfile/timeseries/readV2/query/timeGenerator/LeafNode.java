@@ -2,6 +2,8 @@ package cn.edu.tsinghua.tsfile.timeseries.readV2.query.timeGenerator;
 
 import cn.edu.tsinghua.tsfile.timeseries.readV2.reader.SeriesReader;
 
+import java.io.IOException;
+
 /**
  * @author Jinrui Zhang
  */
@@ -14,12 +16,12 @@ public class LeafNode implements Node {
     }
 
     @Override
-    public boolean hasNext() {
+    public boolean hasNext() throws IOException {
         return seriesReader.hasNext();
     }
 
     @Override
-    public long next() {
+    public long next() throws IOException {
         return seriesReader.next().getTimestamp();
     }
 }

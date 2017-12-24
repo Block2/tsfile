@@ -1,7 +1,6 @@
 package cn.edu.tsinghua.tsfile.timeseries.readV2.query.timeGenerator;
 
-import cn.edu.tsinghua.tsfile.timeseries.readV2.reader.SeriesReader;
-
+import java.io.IOException;
 import java.util.NoSuchElementException;
 
 /**
@@ -22,7 +21,7 @@ public class NonLeafNode implements Node {
     }
 
     @Override
-    public boolean hasNext() {
+    public boolean hasNext() throws IOException {
         if (hasCachedNextValue) {
             return true;
         }
@@ -30,7 +29,7 @@ public class NonLeafNode implements Node {
     }
 
     @Override
-    public long next() {
+    public long next() throws IOException {
         if (hasCachedNextValue) {
             hasCachedNextValue = false;
             return cachedNextValue;

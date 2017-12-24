@@ -27,4 +27,10 @@ public class TimeValuePair {
     public void setValue(TsPrimitiveType value) {
         this.value = value;
     }
+
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(timestamp).append(" : ").append(getValue());
+        return stringBuilder.toString();
+    }
 }

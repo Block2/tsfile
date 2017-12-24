@@ -63,6 +63,9 @@ public class QueryFilterOptimizer {
     private QueryFilter handleOneGlobalTimeFilter(GlobalTimeFilter globalTimeFilter, QueryFilter queryFilter
             , List<SeriesDescriptor> selectedSeries, QueryFilterType relation) throws QueryFilterOptimizationException {
         QueryFilter regularRightQueryFilter = convertGlobalTimeFilter(queryFilter, selectedSeries);
+        if (regularRightQueryFilter instanceof GlobalTimeFilter) {
+            return combineTwoGlobalTimeFilter(globalTimeFilter, (GlobalTimeFilter) regularRightQueryFilter, relation);
+        }
         if (relation == QueryFilterType.AND) {
             addTimeFilterToQueryFilter((globalTimeFilter).getFilter(), regularRightQueryFilter);
             return regularRightQueryFilter;

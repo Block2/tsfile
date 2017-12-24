@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 /**
  * Definition for unary filter operations
+ *
  * @param <T> comparable data type
  * @author CGF
  */

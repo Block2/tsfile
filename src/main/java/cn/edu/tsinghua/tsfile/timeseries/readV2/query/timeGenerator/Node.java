@@ -1,13 +1,13 @@
 package cn.edu.tsinghua.tsfile.timeseries.readV2.query.timeGenerator;
 
-import cn.edu.tsinghua.tsfile.timeseries.readV2.reader.SeriesReader;
+import java.io.IOException;
 
 /**
  * @author Jinrui Zhang
  */
 public interface Node {
 
-    boolean hasNext();
+    boolean hasNext() throws IOException;
 
-    long next();
+    long next() throws IOException;
 }
