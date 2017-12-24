@@ -48,9 +48,18 @@ public class QueryFilterOptimizerTest {
             Filter timeFilter = TimeFilter.lt(100L);
             QueryFilter queryFilter = new GlobalTimeFilter(timeFilter);
             System.out.println(queryFilterOptimizer.convertGlobalTimeFilter(queryFilter, selectedSeries));
+
+            QueryFilter queryFilter2 = QueryFilterOperator.or(
+                    QueryFilterOperator.and(new GlobalTimeFilter(TimeFilter.lt(50L)), new GlobalTimeFilter(TimeFilter.gt(10L))),
+                    new GlobalTimeFilter(TimeFilter.gt(200L)));
+            QueryFilterPrinter.print(queryFilterOptimizer.convertGlobalTimeFilter(queryFilter2, selectedSeries));
+
         } catch (QueryFilterOptimizationException e) {
             e.printStackTrace();
         }
+
+
+
     }
 
     @Test

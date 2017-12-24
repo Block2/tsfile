@@ -19,7 +19,7 @@ public class IntPackerTest {
 		Random rand = new Random();
 		int width = 31;
 
-		int count = 100000;
+		int count = 1000000;
 		ArrayList<Integer> preValues = new ArrayList<Integer>();
 		IntPacker packer = new IntPacker(width);
 		byte[] bb = new byte[count * width];
