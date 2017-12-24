@@ -22,7 +22,7 @@ import java.io.InputStream;
  */
 public abstract class SeriesChunkReader implements TimeValuePairReader {
 
-    private TSDataType dataType;
+    protected TSDataType dataType;
     private InputStream seriesChunkInputStream;
 
     private boolean pageReaderInitialized;

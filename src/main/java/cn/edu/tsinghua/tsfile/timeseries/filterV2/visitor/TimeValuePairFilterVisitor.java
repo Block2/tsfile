@@ -5,15 +5,6 @@ import cn.edu.tsinghua.tsfile.timeseries.filterV2.basic.Filter;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.operator.*;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.datatype.TimeValuePair;
 
-/**
- * NormalFilterExpressionVisitor is implemented by visitor pattern.
- * Implemented using visitor pattern.
- *
- * A FilterVistor must visit all these methods below, per visitor design pattern.
- * And a Filter just need implements an accept() method.
- *
- * @author CGF
- */
 public interface TimeValuePairFilterVisitor<R> {
 
     <T extends Comparable<T>> R satisfy(TimeValuePair value, Filter<T> filter);

@@ -9,72 +9,55 @@ import cn.edu.tsinghua.tsfile.timeseries.filterV2.operator.*;
  */
 public class ValueFilter {
 
-    public static class ValueEq <T extends Comparable<T>> extends Eq<T> {
+    public static class ValueEq<T extends Comparable<T>> extends Eq<T> {
         private ValueEq(T value) {
-            super(value);
-        }
-        public String toString(){
-            return FilterType.VALUE_FILTER + super.toString();
+            super(value, FilterType.VALUE_FILTER);
         }
     }
 
-    public static class ValueGt <T extends Comparable<T>> extends Gt<T> {
+    public static class ValueGt<T extends Comparable<T>> extends Gt<T> {
         private ValueGt(T value) {
-            super(value);
-        }
-        public String toString(){
-            return FilterType.VALUE_FILTER + super.toString();
+            super(value, FilterType.VALUE_FILTER);
         }
     }
 
-    public static class ValueGtEq <T extends Comparable<T>> extends GtEq<T> {
+    public static class ValueGtEq<T extends Comparable<T>> extends GtEq<T> {
         private ValueGtEq(T value) {
-            super(value);
-        }
-        public String toString(){
-            return FilterType.VALUE_FILTER + super.toString();
+            super(value, FilterType.VALUE_FILTER);
         }
     }
 
-    public static class ValueLt <T extends Comparable<T>> extends Lt<T> {
+    public static class ValueLt<T extends Comparable<T>> extends Lt<T> {
         private ValueLt(T value) {
-            super(value);
-        }
-        public String toString(){
-            return FilterType.VALUE_FILTER + super.toString();
+            super(value, FilterType.VALUE_FILTER);
         }
     }
 
-    public static class ValueLtEq <T extends Comparable<T>> extends LtEq<T> {
+    public static class ValueLtEq<T extends Comparable<T>> extends LtEq<T> {
         private ValueLtEq(T value) {
-            super(value);
+            super(value, FilterType.VALUE_FILTER);
         }
-        public String toString(){
+    }
+
+    public static class ValueNoRestriction<T extends Comparable<T>> extends NoRestriction<T> {
+        public String toString() {
             return FilterType.VALUE_FILTER + super.toString();
         }
     }
 
-    public static class ValueNoRestriction <T extends Comparable<T>> extends NoRestriction<T> {
-        public String toString(){
-            return FilterType.VALUE_FILTER + super.toString();
-        }
-    }
-
-    public static class ValueNot <T extends Comparable<T>> extends Not<T> {
+    public static class ValueNot<T extends Comparable<T>> extends Not<T> {
         private ValueNot(Filter<T> filter) {
             super(filter);
         }
-        public String toString(){
+
+        public String toString() {
             return FilterType.VALUE_FILTER + super.toString();
         }
     }
 
-    public static class ValueNotEq <T extends Comparable<T>> extends NotEq<T> {
+    public static class ValueNotEq<T extends Comparable<T>> extends NotEq<T> {
         private ValueNotEq(T value) {
-            super(value);
-        }
-        public String toString(){
-            return FilterType.VALUE_FILTER + super.toString();
+            super(value, FilterType.VALUE_FILTER);
         }
     }
 
@@ -98,7 +81,7 @@ public class ValueFilter {
         return new ValueLtEq(value);
     }
 
-    public static <T extends Comparable<T>> ValueNoRestriction<T> noRestriction(){
+    public static <T extends Comparable<T>> ValueNoRestriction<T> noRestriction() {
         return new ValueNoRestriction<T>();
     }
 

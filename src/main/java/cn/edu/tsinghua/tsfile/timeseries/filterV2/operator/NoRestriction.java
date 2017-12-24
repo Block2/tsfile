@@ -2,6 +2,7 @@ package cn.edu.tsinghua.tsfile.timeseries.filterV2.operator;
 
 
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.basic.Filter;
+import cn.edu.tsinghua.tsfile.timeseries.filterV2.visitor.AbstractFilterVisitor;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.visitor.TimeValuePairFilterVisitor;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.datatype.TimeValuePair;
 
@@ -13,6 +14,11 @@ public class NoRestriction<T extends Comparable<T>> implements Filter<T> {
 
     public static final NoRestriction getInstance() {
         return INSTANCE;
+    }
+
+    @Override
+    public <R> R accept(AbstractFilterVisitor<R> visitor) {
+        return visitor.visit(this);
     }
 
     @Override
