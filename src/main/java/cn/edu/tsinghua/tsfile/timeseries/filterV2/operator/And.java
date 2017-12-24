@@ -2,6 +2,7 @@ package cn.edu.tsinghua.tsfile.timeseries.filterV2.operator;
 
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.basic.Filter;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.basic.BinaryFilter;
+import cn.edu.tsinghua.tsfile.timeseries.filterV2.visitor.AbstractFilterVisitor;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.visitor.TimeValuePairFilterVisitor;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.datatype.TimeValuePair;
 
@@ -16,6 +17,11 @@ public class And<T extends Comparable<T>> extends BinaryFilter<T> {
 
     public And(Filter left, Filter right) {
         super(left, right);
+    }
+
+    @Override
+    public <R> R accept(AbstractFilterVisitor<R> visitor) {
+        return visitor.visit(this);
     }
 
     @Override

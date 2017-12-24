@@ -2,6 +2,8 @@ package cn.edu.tsinghua.tsfile.timeseries.filterV2.operator;
 
 
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.basic.UnaryFilter;
+import cn.edu.tsinghua.tsfile.timeseries.filterV2.factory.FilterType;
+import cn.edu.tsinghua.tsfile.timeseries.filterV2.visitor.AbstractFilterVisitor;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.visitor.TimeValuePairFilterVisitor;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.datatype.TimeValuePair;
 
@@ -15,8 +17,13 @@ public class NotEq<T extends Comparable<T>> extends UnaryFilter<T> {
 
     private static final long serialVersionUID = 2574090797476500965L;
 
-    public NotEq(T value) {
-        super(value);
+    public NotEq(T value, FilterType filterType) {
+        super(value, filterType);
+    }
+
+    @Override
+    public <R> R accept(AbstractFilterVisitor<R> visitor) {
+        return visitor.visit(this);
     }
 
     @Override
@@ -26,6 +33,6 @@ public class NotEq<T extends Comparable<T>> extends UnaryFilter<T> {
 
     @Override
     public String toString() {
-        return " != " + value;
+        return getFilterType() + " != " + value;
     }
 }

@@ -1,6 +1,7 @@
 package cn.edu.tsinghua.tsfile.timeseries.filterV2.operator;
 
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.basic.Filter;
+import cn.edu.tsinghua.tsfile.timeseries.filterV2.visitor.AbstractFilterVisitor;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.visitor.TimeValuePairFilterVisitor;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.datatype.TimeValuePair;
 
@@ -18,6 +19,11 @@ public class Not<T extends Comparable<T>> implements Filter<T>, Serializable {
 
     public Not(Filter that) {
         this.that = that;
+    }
+
+    @Override
+    public <R> R accept(AbstractFilterVisitor<R> visitor) {
+        return visitor.visit(this);
     }
 
     @Override

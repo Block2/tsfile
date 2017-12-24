@@ -11,61 +11,37 @@ public class TimeFilter {
 
     public static class TimeEq extends Eq {
         private TimeEq(Long value) {
-            super(value);
-        }
-
-        public String toString() {
-            return FilterType.TIME_FILTER + super.toString();
+            super(value, FilterType.TIME_FILTER);
         }
     }
 
     public static class TimeNotEq extends NotEq {
         private TimeNotEq(Long value) {
-            super(value);
-        }
-
-        public String toString() {
-            return FilterType.TIME_FILTER + super.toString();
+            super(value, FilterType.TIME_FILTER);
         }
     }
 
     public static class TimeGt extends Gt {
         private TimeGt(Long value) {
-            super(value);
-        }
-
-        public String toString() {
-            return FilterType.TIME_FILTER + super.toString();
+            super(value, FilterType.TIME_FILTER);
         }
     }
 
     public static class TimeGtEq extends GtEq {
         private TimeGtEq(Long value) {
-            super(value);
-        }
-
-        public String toString() {
-            return FilterType.TIME_FILTER + super.toString();
+            super(value, FilterType.TIME_FILTER);
         }
     }
 
     public static class TimeLt extends Lt {
         private TimeLt(Long value) {
-            super(value);
-        }
-
-        public String toString() {
-            return FilterType.TIME_FILTER + super.toString();
+            super(value, FilterType.TIME_FILTER);
         }
     }
 
     public static class TimeLtEq extends LtEq {
         private TimeLtEq(Long value) {
-            super(value);
-        }
-
-        public String toString() {
-            return FilterType.TIME_FILTER + super.toString();
+            super(value, FilterType.TIME_FILTER);
         }
     }
 
@@ -78,10 +54,6 @@ public class TimeFilter {
     public static class TimeNot extends Not<Long> {
         private TimeNot(Filter<Long> filter) {
             super(filter);
-        }
-
-        public String toString() {
-            return FilterType.TIME_FILTER + super.toString();
         }
     }
 
