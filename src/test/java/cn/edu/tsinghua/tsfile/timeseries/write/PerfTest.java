@@ -31,7 +31,7 @@ import cn.edu.tsinghua.tsfile.timeseries.write.io.TsFileIOWriter;
 import cn.edu.tsinghua.tsfile.timeseries.write.schema.FileSchema;
 
 /**
- * This is used for performance test, no asserting. User could change {@code ROW_COUNT} for larger
+ * This is used for performance test, no asserting. User could change {@code rowCount} for larger
  * data test.
  *
  * @author kangrong
