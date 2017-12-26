@@ -1,15 +1,4 @@
-package cn.edu.tsinghua.tsfile.timeseries.read;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Scanner;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package cn.edu.tsinghua.tsfile.timeseries.readV2;
 
 import cn.edu.tsinghua.tsfile.common.conf.TSFileConfig;
 import cn.edu.tsinghua.tsfile.common.conf.TSFileDescriptor;
@@ -23,20 +12,41 @@ import cn.edu.tsinghua.tsfile.timeseries.write.TsFileWriter;
 import cn.edu.tsinghua.tsfile.timeseries.write.exception.WriteProcessException;
 import cn.edu.tsinghua.tsfile.timeseries.write.record.TSRecord;
 import cn.edu.tsinghua.tsfile.timeseries.write.schema.FileSchema;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.junit.Ignore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ReadPerf {
-    private static final Logger LOG = LoggerFactory.getLogger(ReadPerf.class);
-    public static final int ROW_COUNT = 1000;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
+@Ignore
+public class TsFileGeneratorForTest {
+
+    private static int rowCount;
+    private static int rowGroupSize;
+    private static int pageSize;
+
+    private static final Logger LOG = LoggerFactory.getLogger(TsFileGeneratorForTest.class);
     public static TsFileWriter innerWriter;
     public static String inputDataFile;
-    public static String outputDataFile = "src/test/resources/perTestOutputData.ksn";
+    public static String outputDataFile = "src/test/resources/testTsFile.ts";
     public static String errorOutputDataFile;
     public static JSONObject jsonSchema;
 
-	public static void generateFile() throws IOException, InterruptedException, WriteProcessException {
-		prepare();
-    	write();
-	}
+    public static final long START_TIMESTAMP = 1480562618000L;
+
+    public static void generateFile(int rc, int rs, int ps) throws IOException, InterruptedException, WriteProcessException {
+        rowCount = rc;
+        rowGroupSize = rs;
+        pageSize = ps;
+        prepare();
+        write();
+    }
 
     public static void prepare() throws IOException {
         inputDataFile = "src/test/resources/perTestInputData";
@@ -64,25 +74,20 @@ public class ReadPerf {
         file.getParentFile().mkdirs();
         FileWriter fw = new FileWriter(file);
 
-        long startTime = 1480562618000L;
-        startTime = startTime - startTime % 1000;
-        for (int i = 0; i < ROW_COUNT; i++) {
+        long startTime = START_TIMESTAMP;
+        for (int i = 0; i < rowCount; i++) {
             // write d1
             String d1 = "d1," + (startTime + i) + ",s1," + (i * 10 + 1) + ",s2," + (i * 10 + 2);
-            if (i % 20 < 10) {
-                // LOG.info("write null to d1:" + (startTime + i));
-                d1 = "d1," + (startTime + i) + ",s1,,s2," + (i * 10 + 2);
-            }
             if (i % 5 == 0)
                 d1 += ",s3," + (i * 10 + 3);
             if (i % 8 == 0)
-            	d1 += ",s4," + "dog" + i;
+                d1 += ",s4," + "dog" + i;
             if (i % 9 == 0)
-            	d1 += ",s5," + "false";
+                d1 += ",s5," + "false";
             if (i % 10 == 0)
-            	d1 += ",s6," + ((int)(i/9.0)*100)/100.0;
+                d1 += ",s6," + ((int) (i / 9.0) * 100) / 100.0;
             if (i % 11 == 0)
-            	d1 += ",s7," + ((int)(i/10.0)*100)/100.0;
+                d1 += ",s7," + ((int) (i / 10.0) * 100) / 100.0;
             fw.write(d1 + "\r\n");
 
             // write d2
@@ -94,15 +99,15 @@ public class ReadPerf {
             if (i % 5 == 0)
                 d2 += ",s1," + (i * 10 + 1);
             if (i % 8 == 0)
-            	d2 += ",s4," + "dog" + i%4;
+                d2 += ",s4," + "dog" + i % 4;
             fw.write(d2 + "\r\n");
         }
         // write error
         String d =
-                "d2,3," + (startTime + ROW_COUNT) + ",s2," + (ROW_COUNT * 10 + 2) + ",s3,"
-                        + (ROW_COUNT * 10 + 3);
+                "d2,3," + (startTime + rowCount) + ",s2," + (rowCount * 10 + 2) + ",s3,"
+                        + (rowCount * 10 + 3);
         fw.write(d + "\r\n");
-        d = "d2," + (startTime + ROW_COUNT + 1) + ",2,s-1," + (ROW_COUNT * 10 + 2);
+        d = "d2," + (startTime + rowCount + 1) + ",2,s-1," + (rowCount * 10 + 2);
         fw.write(d + "\r\n");
         fw.close();
     }
@@ -117,9 +122,8 @@ public class ReadPerf {
 
         //LOG.info(jsonSchema.toString());
         FileSchema schema = new FileSchema(jsonSchema);
-
-        // TSFileDescriptor.conf.rowGroupSize = 2000;
-        // TSFileDescriptor.conf.pageSize = 100;
+        TSFileDescriptor.getInstance().getConfig().groupSizeInByte = rowGroupSize;
+        TSFileDescriptor.getInstance().getConfig().maxNumberOfPointsInPage = pageSize;
         innerWriter = new TsFileWriter(file, schema, TSFileDescriptor.getInstance().getConfig());
 
         // write
