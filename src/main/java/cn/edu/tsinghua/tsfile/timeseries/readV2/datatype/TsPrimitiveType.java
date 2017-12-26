@@ -38,6 +38,10 @@ public abstract class TsPrimitiveType {
         return getStringValue();
     }
 
+    public boolean equals(Object object) {
+        return (object instanceof TsPrimitiveType) && (((TsPrimitiveType) object).getValue().equals(getValue()));
+    }
+
 
     public static class TsBoolean extends TsPrimitiveType {
 

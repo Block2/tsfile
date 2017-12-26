@@ -42,4 +42,8 @@ public class SeriesFilter<T extends Comparable<T>> implements UnaryQueryFilter {
     public String toString() {
         return "[" + seriesDescriptor + ":" + filter + "]";
     }
+
+    public SeriesDescriptor getSeriesDescriptor() {
+        return this.seriesDescriptor;
+    }
 }

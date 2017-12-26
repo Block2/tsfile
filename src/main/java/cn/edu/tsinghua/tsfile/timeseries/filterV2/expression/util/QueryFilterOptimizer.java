@@ -7,7 +7,7 @@ import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.QueryFilter;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.QueryFilterType;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.UnaryQueryFilter;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.impl.GlobalTimeFilter;
-import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.impl.QueryFilterOperator;
+import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.impl.QueryFilterFactory;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.impl.SeriesFilter;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.factory.FilterFactory;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.common.SeriesDescriptor;
@@ -43,9 +43,9 @@ public class QueryFilterOptimizer {
                 QueryFilter regularRight = convertGlobalTimeFilter(right, selectedSeries);
                 BinaryQueryFilter midRet = null;
                 if (relation == QueryFilterType.AND) {
-                    midRet = QueryFilterOperator.and(regularLeft, regularRight);
+                    midRet = QueryFilterFactory.and(regularLeft, regularRight);
                 } else if (relation == QueryFilterType.OR) {
-                    midRet = QueryFilterOperator.or(regularLeft, regularRight);
+                    midRet = QueryFilterFactory.or(regularLeft, regularRight);
                 }
                 if (midRet.getLeft().getType() == QueryFilterType.GLOBAL_TIME || midRet.getRight().getType() == QueryFilterType.GLOBAL_TIME) {
                     return convertGlobalTimeFilter(midRet, selectedSeries);
@@ -70,7 +70,7 @@ public class QueryFilterOptimizer {
             addTimeFilterToQueryFilter((globalTimeFilter).getFilter(), regularRightQueryFilter);
             return regularRightQueryFilter;
         } else if (relation == QueryFilterType.OR) {
-            return QueryFilterOperator.or(convertGlobalTimeFilterToQueryFilterBySeriesList(globalTimeFilter, selectedSeries), queryFilter);
+            return QueryFilterFactory.or(convertGlobalTimeFilterToQueryFilterBySeriesList(globalTimeFilter, selectedSeries), queryFilter);
         }
         throw new QueryFilterOptimizationException("unknown relation in queryFilter:" + relation);
     }
@@ -83,7 +83,7 @@ public class QueryFilterOptimizer {
         SeriesFilter firstSeriesFilter = new SeriesFilter(selectedSeries.get(0), timeFilter.getFilter());
         QueryFilter queryFilter = firstSeriesFilter;
         for (int i = 1; i < selectedSeries.size(); i++) {
-            queryFilter = QueryFilterOperator.or(queryFilter, new SeriesFilter(selectedSeries.get(i), timeFilter.getFilter()));
+            queryFilter = QueryFilterFactory.or(queryFilter, new SeriesFilter(selectedSeries.get(i), timeFilter.getFilter()));
         }
         return queryFilter;
     }
@@ -91,9 +91,9 @@ public class QueryFilterOptimizer {
     private void addTimeFilterToQueryFilter(Filter<?> timeFilter, QueryFilter queryFilter) {
         if (queryFilter instanceof SeriesFilter) {
             addTimeFilterToSeriesFilter(timeFilter, (SeriesFilter) queryFilter);
-        } else if (queryFilter instanceof QueryFilterOperator) {
-            addTimeFilterToQueryFilter(timeFilter, ((QueryFilterOperator) queryFilter).getLeft());
-            addTimeFilterToQueryFilter(timeFilter, ((QueryFilterOperator) queryFilter).getRight());
+        } else if (queryFilter instanceof QueryFilterFactory) {
+            addTimeFilterToQueryFilter(timeFilter, ((QueryFilterFactory) queryFilter).getLeft());
+            addTimeFilterToQueryFilter(timeFilter, ((QueryFilterFactory) queryFilter).getRight());
         } else {
             throw new UnsupportedOperationException("queryFilter should contains only SeriesFilter but other type is found:"
                     + queryFilter.getClass().getName());

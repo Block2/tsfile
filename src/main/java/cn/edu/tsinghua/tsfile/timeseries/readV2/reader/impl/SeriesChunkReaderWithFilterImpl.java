@@ -4,6 +4,7 @@ import cn.edu.tsinghua.tsfile.file.metadata.enums.CompressionTypeName;
 import cn.edu.tsinghua.tsfile.file.metadata.enums.TSDataType;
 import cn.edu.tsinghua.tsfile.format.PageHeader;
 import cn.edu.tsinghua.tsfile.timeseries.filter.utils.DigestForFilter;
+import cn.edu.tsinghua.tsfile.timeseries.filterV2.basic.Filter;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.impl.SeriesFilter;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.visitor.TimeValuePairFilterVisitor;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.visitor.impl.DigestFilterVisitor;
@@ -15,14 +16,14 @@ import java.io.InputStream;
 /**
  * Created by zhangjinrui on 2017/12/24.
  */
-public class SeriesChunkReaderWithFilter extends SeriesChunkReader {
+public class SeriesChunkReaderWithFilterImpl extends SeriesChunkReader {
 
-    private SeriesFilter<?> filter;
+    private Filter<?> filter;
     private DigestFilterVisitor digestFilterVisitor;
     private TimeValuePairFilterVisitor<Boolean> timeValuePairFilterVisitor;
 
-    public SeriesChunkReaderWithFilter(InputStream seriesChunkInputStream, TSDataType dataType,
-                                       CompressionTypeName compressionTypeName, SeriesFilter<?> filter) {
+    public SeriesChunkReaderWithFilterImpl(InputStream seriesChunkInputStream, TSDataType dataType,
+                                           CompressionTypeName compressionTypeName, Filter<?> filter) {
         super(seriesChunkInputStream, dataType, compressionTypeName);
         this.filter = filter;
         this.timeValuePairFilterVisitor = new TimeValuePairFilterVisitorImpl();
@@ -35,11 +36,11 @@ public class SeriesChunkReaderWithFilter extends SeriesChunkReader {
                 pageHeader.data_page_header.getMax_timestamp());
         DigestForFilter valueDigest = new DigestForFilter(
                 pageHeader.data_page_header.digest.min, pageHeader.data_page_header.digest.max, dataType);
-        return digestFilterVisitor.satisfy(timeDigest, valueDigest, filter.getFilter());
+        return digestFilterVisitor.satisfy(timeDigest, valueDigest, filter);
     }
 
     @Override
     public boolean timeValuePairSatisfied(TimeValuePair timeValuePair) {
-        return timeValuePairFilterVisitor.satisfy(timeValuePair, filter.getFilter());
+        return timeValuePairFilterVisitor.satisfy(timeValuePair, filter);
     }
 }

@@ -11,9 +11,9 @@ import java.io.InputStream;
 /**
  * Created by zhangjinrui on 2017/12/24.
  */
-public class SeriesChunkReaderWithoutFilter extends SeriesChunkReader {
+public class SeriesChunkReaderWithoutFilterImpl extends SeriesChunkReader {
 
-    public SeriesChunkReaderWithoutFilter(InputStream seriesChunkInputStream, TSDataType dataType, CompressionTypeName compressionTypeName) {
+    public SeriesChunkReaderWithoutFilterImpl(InputStream seriesChunkInputStream, TSDataType dataType, CompressionTypeName compressionTypeName) {
         super(seriesChunkInputStream, dataType, compressionTypeName);
     }
 
