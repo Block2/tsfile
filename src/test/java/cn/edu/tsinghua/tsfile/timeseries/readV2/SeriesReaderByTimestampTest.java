@@ -33,9 +33,9 @@ import java.util.List;
 /**
  * Created by zhangjinrui on 2017/12/25.
  */
-public class SeriesReaderTest {
+public class SeriesReaderByTimestampTest {
 
-    private static final String FILE_PATH = TsFileGeneratorForTest.outputDataFile;
+    private static final String FILE_PATH = TsFileGeneratorForSeriesReaderByTimestamp.outputDataFile;
     private ITsRandomAccessFileReader randomAccessFileReader;
     private MetadataQuerierByFileImpl metadataQuerierByFile;
     private int rowCount = 1000000;
@@ -43,7 +43,7 @@ public class SeriesReaderTest {
     @Before
     public void before() throws InterruptedException, WriteProcessException, IOException {
         TSFileDescriptor.getInstance().getConfig().timeSeriesEncoder = "TS_2DIFF";
-        TsFileGeneratorForTest.generateFile(rowCount, 10 * 1024 * 1024, 10000);
+        TsFileGeneratorForSeriesReaderByTimestamp.generateFile(rowCount, 10 * 1024 * 1024, 10000);
         randomAccessFileReader = new TsRandomAccessLocalFileReader(FILE_PATH);
         metadataQuerierByFile = new MetadataQuerierByFileImpl(randomAccessFileReader);
     }
@@ -51,62 +51,35 @@ public class SeriesReaderTest {
     @After
     public void after() throws IOException {
         randomAccessFileReader.close();
-        TsFileGeneratorForTest.after();
+        TsFileGeneratorForSeriesReaderByTimestamp.after();
     }
 
     @Test
-    public void readTest() throws IOException {
-        int count = 0;
+    public void readByTimestamp() throws IOException {
         SeriesChunkLoaderImpl seriesChunkLoader = new SeriesChunkLoaderImpl(randomAccessFileReader);
         List<SeriesChunkDescriptor> seriesChunkDescriptorList = metadataQuerierByFile.getSeriesChunkDescriptorList(new Path("d1.s1"));
-
         SeriesReader seriesReader = new SeriesReaderFromSingleFileWithoutFilterImpl(seriesChunkLoader, seriesChunkDescriptorList);
-        long startTime = TsFileGeneratorForTest.START_TIMESTAMP;
-        long startTimestamp = System.currentTimeMillis();
-        while (seriesReader.hasNext()) {
-            TimeValuePair timeValuePair = seriesReader.next();
-            Assert.assertEquals(startTime, timeValuePair.getTimestamp());
-            startTime++;
-            count++;
-        }
-        long endTimestamp = System.currentTimeMillis();
-        Assert.assertEquals(rowCount, count);
-        System.out.println("SeriesReadTest. [Time used]: " + (endTimestamp - startTimestamp) +
-                " ms. [Read Count]: " + count);
 
-
-        seriesChunkDescriptorList = metadataQuerierByFile.getSeriesChunkDescriptorList(new Path("d1.s4"));
-        seriesReader = new SeriesReaderFromSingleFileWithoutFilterImpl(seriesChunkLoader, seriesChunkDescriptorList);
-        count = 0;
-        startTimestamp = System.currentTimeMillis();
-        while (seriesReader.hasNext()) {
-            TimeValuePair timeValuePair = seriesReader.next();
-            startTime++;
-            count++;
-        }
-        endTimestamp = System.currentTimeMillis();
-        System.out.println("SeriesReadTest. [Time used]: " + (endTimestamp - startTimestamp) +
-                " ms. [Read Count]: " + count);
-    }
-
-    @Test
-    public void readWithFilterTest() throws IOException {
-        SeriesChunkLoaderImpl seriesChunkLoader = new SeriesChunkLoaderImpl(randomAccessFileReader);
-        List<SeriesChunkDescriptor> seriesChunkDescriptorList = metadataQuerierByFile.getSeriesChunkDescriptorList(new Path("d1.s1"));
-
-        Filter<Integer> filter = new FilterFactory().or(
-                FilterFactory.and(TimeFilter.gt(1480563570029L), TimeFilter.lt(1480563570033L)),
-                FilterFactory.and(ValueFilter.gtEq(9520331), ValueFilter.ltEq(9520361)));
-        SeriesFilter<Integer> seriesFilter = new SeriesFilter<>(new SeriesDescriptor(new Path("d1.s1"), TSDataType.INT32), filter);
-        SeriesReader seriesReader = new SeriesReaderFromSingleFileWithFilterImpl(seriesChunkLoader, seriesChunkDescriptorList, seriesFilter.getFilter());
-
-        long startTimestamp = System.currentTimeMillis();
+        List<TimeValuePair> timeValuePairList = new ArrayList<>();
         int count = 0;
-        long aimedTimestamp = 1480563570030L;
         while (seriesReader.hasNext()) {
             TimeValuePair timeValuePair = seriesReader.next();
+            if (count % 100 == 0) {
+                timeValuePairList.add(new TimeValuePair(timeValuePair.getTimestamp() - 1, null));
+                timeValuePairList.add(timeValuePair);
+            }
             count++;
-            Assert.assertEquals(aimedTimestamp++, timeValuePair.getTimestamp());
+        }
+
+        long startTimestamp = System.currentTimeMillis();
+        count = 0;
+
+        SeriesReaderFromSingleFileByTimestampImpl seriesReaderFromSingleFileByTimestamp = new SeriesReaderFromSingleFileByTimestampImpl(seriesChunkLoader, seriesChunkDescriptorList);
+
+        for (TimeValuePair timeValuePair : timeValuePairList) {
+            TsPrimitiveType value = seriesReaderFromSingleFileByTimestamp.getValueInTimestamp(timeValuePair.getTimestamp());
+            System.out.println(timeValuePair + "|" + value);
+            Assert.assertEquals(timeValuePair.getValue(), value);
         }
         long endTimestamp = System.currentTimeMillis();
         System.out.println("SeriesReadWithFilterTest. [Time used]: " + (endTimestamp - startTimestamp) +

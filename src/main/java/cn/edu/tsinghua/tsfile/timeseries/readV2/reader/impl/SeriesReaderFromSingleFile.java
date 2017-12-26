@@ -14,11 +14,11 @@ import java.util.List;
 public abstract class SeriesReaderFromSingleFile implements SeriesReader {
 
     protected SeriesChunkLoader seriesChunkLoader;
-    private List<SeriesChunkDescriptor> seriesChunkDescriptorList;
+    protected List<SeriesChunkDescriptor> seriesChunkDescriptorList;
 
     protected SeriesChunkReader seriesChunkReader;
-    private boolean seriesChunkReaderInitialized;
-    private int currentReadSeriesChunkIndex;
+    protected boolean seriesChunkReaderInitialized;
+    protected int currentReadSeriesChunkIndex;
 
     public SeriesReaderFromSingleFile(SeriesChunkLoader seriesChunkLoader, List<SeriesChunkDescriptor> seriesChunkDescriptorList) {
         this.seriesChunkLoader = seriesChunkLoader;
@@ -29,6 +29,9 @@ public abstract class SeriesReaderFromSingleFile implements SeriesReader {
 
     @Override
     public boolean hasNext() throws IOException {
+        if (seriesChunkReaderInitialized && seriesChunkReader.hasNext()) {
+            return true;
+        }
         while ((currentReadSeriesChunkIndex + 1) < seriesChunkDescriptorList.size()) {
             if (!seriesChunkReaderInitialized) {
                 initSeriesChunkReader(seriesChunkDescriptorList.get(++currentReadSeriesChunkIndex));

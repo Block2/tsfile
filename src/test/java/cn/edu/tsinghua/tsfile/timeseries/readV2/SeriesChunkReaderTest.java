@@ -14,20 +14,23 @@ import cn.edu.tsinghua.tsfile.timeseries.read.support.Path;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.common.SeriesDescriptor;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.datatype.TimeValuePair;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.reader.impl.SeriesChunkReader;
-import cn.edu.tsinghua.tsfile.timeseries.readV2.reader.impl.SeriesChunkReaderWithFilter;
-import cn.edu.tsinghua.tsfile.timeseries.readV2.reader.impl.SeriesChunkReaderWithoutFilter;
+import cn.edu.tsinghua.tsfile.timeseries.readV2.reader.impl.SeriesChunkReaderByTimestampImpl;
+import cn.edu.tsinghua.tsfile.timeseries.readV2.reader.impl.SeriesChunkReaderWithFilterImpl;
+import cn.edu.tsinghua.tsfile.timeseries.readV2.reader.impl.SeriesChunkReaderWithoutFilterImpl;
 import cn.edu.tsinghua.tsfile.timeseries.write.desc.MeasurementDescriptor;
 import cn.edu.tsinghua.tsfile.timeseries.write.page.IPageWriter;
 import cn.edu.tsinghua.tsfile.timeseries.write.page.PageWriterImpl;
 import cn.edu.tsinghua.tsfile.timeseries.write.series.ISeriesWriter;
 import cn.edu.tsinghua.tsfile.timeseries.write.series.SeriesWriterImpl;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -55,9 +58,6 @@ public class SeriesChunkReaderTest {
         TSFileDescriptor.getInstance().getConfig().duplicateIncompletedPage = true;
         TSFileDescriptor.getInstance().getConfig().maxNumberOfPointsInPage = MAX_PAGE_VALUE_COUNT;
         TSFileDescriptor.getInstance().getConfig().timeSeriesEncoder = "TS_2DIFF";
-        MeasurementDescriptor measurementDescriptor = new MeasurementDescriptor("s1", TSDataType.INT64, TSEncoding.RLE);
-        IPageWriter pageWriter = new PageWriterImpl(measurementDescriptor);
-        seriesWriter = new SeriesWriterImpl("d1", measurementDescriptor, pageWriter, PAGE_SIZE_THRESHOLD);
     }
 
     @After
@@ -68,6 +68,9 @@ public class SeriesChunkReaderTest {
     }
 
     private ByteArrayInputStream getSeriesChunk() {
+        MeasurementDescriptor measurementDescriptor = new MeasurementDescriptor("s1", TSDataType.INT64, TSEncoding.RLE);
+        IPageWriter pageWriter = new PageWriterImpl(measurementDescriptor);
+        seriesWriter = new SeriesWriterImpl("d1", measurementDescriptor, pageWriter, PAGE_SIZE_THRESHOLD);
         try {
             for (int i = 0; i < TIME_VALUE_PAIR_COUNT; i++) {
                 seriesWriter.write((long) i, (long) i);
@@ -98,8 +101,9 @@ public class SeriesChunkReaderTest {
     public void readOneSeriesChunkWithoutFilter() {
         try {
             ByteArrayInputStream seriesChunkInputStream = getSeriesChunk();
-            SeriesChunkReader seriesChunkReader = new SeriesChunkReaderWithoutFilter(seriesChunkInputStream, TSDataType.INT64, getCompressionTypeName());
+            SeriesChunkReader seriesChunkReader = new SeriesChunkReaderWithoutFilterImpl(seriesChunkInputStream, TSDataType.INT64, getCompressionTypeName());
 
+            int count = 0;
             long aimedValue = 0;
             long startTimestamp = System.currentTimeMillis();
             while (seriesChunkReader.hasNext()) {
@@ -107,9 +111,10 @@ public class SeriesChunkReaderTest {
                 assertEquals(aimedValue, timeValuePair.getTimestamp());
                 assertEquals(aimedValue, timeValuePair.getValue().getLong());
                 aimedValue++;
+                count++;
             }
             long endTimestamp = System.currentTimeMillis();
-            System.out.println("[Read without Filter] Time used: " + (endTimestamp - startTimestamp) + "ms");
+            System.out.println("[Read without Filter] Time used: " + (endTimestamp - startTimestamp) + "ms. Count = " + count);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -130,8 +135,8 @@ public class SeriesChunkReaderTest {
             );
             SeriesFilter<Long> seriesFilter = new SeriesFilter(new SeriesDescriptor(new Path("d1.s1"), TSDataType.INT64), filter);
             ByteArrayInputStream seriesChunkInputStream = getSeriesChunk();
-            SeriesChunkReader seriesChunkReader = new SeriesChunkReaderWithFilter(seriesChunkInputStream, TSDataType.INT64,
-                    getCompressionTypeName(), seriesFilter);
+            SeriesChunkReader seriesChunkReader = new SeriesChunkReaderWithFilterImpl(seriesChunkInputStream, TSDataType.INT64,
+                    getCompressionTypeName(), seriesFilter.getFilter());
             long aimedValue = valueLeft;
             long startTimestamp = System.currentTimeMillis();
             while (seriesChunkReader.hasNext()) {

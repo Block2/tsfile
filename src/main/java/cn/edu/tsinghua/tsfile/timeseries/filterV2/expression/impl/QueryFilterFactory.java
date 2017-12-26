@@ -7,9 +7,9 @@ import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.QueryFilterType;
 /**
  * Created by zhangjinrui on 2017/12/18.
  */
-public abstract class QueryFilterOperator implements BinaryQueryFilter {
+public abstract class QueryFilterFactory implements BinaryQueryFilter {
 
-    protected static class And extends QueryFilterOperator {
+    protected static class And extends QueryFilterFactory {
         public QueryFilter left;
         public QueryFilter right;
 
@@ -38,7 +38,7 @@ public abstract class QueryFilterOperator implements BinaryQueryFilter {
         }
     }
 
-    protected static class Or extends QueryFilterOperator {
+    protected static class Or extends QueryFilterFactory {
         public QueryFilter left;
         public QueryFilter right;
         public Or(QueryFilter left, QueryFilter right) {

@@ -1,4 +1,4 @@
-package cn.edu.tsinghua.tsfile.timeseries.readV2.query.timeGenerator;
+package cn.edu.tsinghua.tsfile.timeseries.readV2.query.timegenerator.node;
 
 import cn.edu.tsinghua.tsfile.timeseries.readV2.reader.SeriesReader;
 
@@ -23,5 +23,10 @@ public class LeafNode implements Node {
     @Override
     public long next() throws IOException {
         return seriesReader.next().getTimestamp();
+    }
+
+    @Override
+    public NodeType getType() {
+        return NodeType.LEAF;
     }
 }

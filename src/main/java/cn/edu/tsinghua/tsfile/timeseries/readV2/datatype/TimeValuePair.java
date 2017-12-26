@@ -7,7 +7,7 @@ public class TimeValuePair {
     private long timestamp;
     private TsPrimitiveType value;
 
-    public TimeValuePair(long timestamp, TsPrimitiveType value){
+    public TimeValuePair(long timestamp, TsPrimitiveType value) {
         this.timestamp = timestamp;
         this.value = value;
     }
@@ -32,5 +32,12 @@ public class TimeValuePair {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(timestamp).append(" : ").append(getValue());
         return stringBuilder.toString();
+    }
+
+    public boolean equals(Object object) {
+        if (object instanceof TimeValuePair) {
+            return ((TimeValuePair) object).getTimestamp() == timestamp && ((TimeValuePair) object).getValue().equals(value);
+        }
+        return false;
     }
 }
