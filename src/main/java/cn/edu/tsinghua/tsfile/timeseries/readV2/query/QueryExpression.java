@@ -2,6 +2,7 @@ package cn.edu.tsinghua.tsfile.timeseries.readV2.query;
 
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.QueryFilter;
 import cn.edu.tsinghua.tsfile.timeseries.read.support.Path;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,5 +42,11 @@ public class QueryExpression {
 
     public List<Path> getSelectedSeries() {
         return selectedSeries;
+    }
+
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("\n\t[Selected Series]:").append(selectedSeries)
+                .append("\n\t[QueryFilter]:").append(queryFilter);
+        return stringBuilder.toString();
     }
 }
