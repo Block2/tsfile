@@ -10,6 +10,7 @@ import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.impl.GlobalTimeFilt
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.impl.QueryFilterFactory;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.impl.SeriesFilter;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.factory.FilterFactory;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.Path;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.common.SeriesDescriptor;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class QueryFilterOptimizer {
 
     }
 
-    public QueryFilter convertGlobalTimeFilter(QueryFilter queryFilter, List<SeriesDescriptor> selectedSeries) throws QueryFilterOptimizationException {
+    public QueryFilter convertGlobalTimeFilter(QueryFilter queryFilter, List<Path> selectedSeries) throws QueryFilterOptimizationException {
         if (queryFilter instanceof UnaryQueryFilter) {
             return queryFilter;
         } else if (queryFilter instanceof BinaryQueryFilter) {
@@ -61,7 +62,7 @@ public class QueryFilterOptimizer {
     }
 
     private QueryFilter handleOneGlobalTimeFilter(GlobalTimeFilter globalTimeFilter, QueryFilter queryFilter
-            , List<SeriesDescriptor> selectedSeries, QueryFilterType relation) throws QueryFilterOptimizationException {
+            , List<Path> selectedSeries, QueryFilterType relation) throws QueryFilterOptimizationException {
         QueryFilter regularRightQueryFilter = convertGlobalTimeFilter(queryFilter, selectedSeries);
         if (regularRightQueryFilter instanceof GlobalTimeFilter) {
             return combineTwoGlobalTimeFilter(globalTimeFilter, (GlobalTimeFilter) regularRightQueryFilter, relation);
@@ -76,7 +77,7 @@ public class QueryFilterOptimizer {
     }
 
     private QueryFilter convertGlobalTimeFilterToQueryFilterBySeriesList(
-            GlobalTimeFilter timeFilter, List<SeriesDescriptor> selectedSeries) throws QueryFilterOptimizationException {
+            GlobalTimeFilter timeFilter, List<Path> selectedSeries) throws QueryFilterOptimizationException {
         if (selectedSeries.size() == 0) {
             throw new QueryFilterOptimizationException("size of selectSeries could not be 0");
         }

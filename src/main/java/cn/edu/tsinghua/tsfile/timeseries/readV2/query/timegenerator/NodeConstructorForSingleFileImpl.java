@@ -25,7 +25,7 @@ public class NodeConstructorForSingleFileImpl extends NodeConstructor {
     @Override
     public SeriesReader generateSeriesReader(SeriesFilter<?> seriesFilter) throws IOException {
         List<SeriesChunkDescriptor> seriesChunkDescriptorList = metadataQuerier.getSeriesChunkDescriptorList(
-                seriesFilter.getSeriesDescriptor().getPath());
+                seriesFilter.getSeriesPath());
         return new SeriesReaderFromSingleFileWithFilterImpl(seriesChunkLoader, seriesChunkDescriptorList, seriesFilter.getFilter());
     }
 }

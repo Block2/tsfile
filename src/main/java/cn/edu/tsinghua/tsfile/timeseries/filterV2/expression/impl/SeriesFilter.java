@@ -5,7 +5,7 @@ import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.QueryFilterType;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.UnaryQueryFilter;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.visitor.TimeValuePairFilterVisitor;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.visitor.impl.TimeValuePairFilterVisitorImpl;
-import cn.edu.tsinghua.tsfile.timeseries.readV2.common.SeriesDescriptor;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.Path;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.datatype.TimeValuePair;
 
 /**
@@ -13,11 +13,11 @@ import cn.edu.tsinghua.tsfile.timeseries.readV2.datatype.TimeValuePair;
  */
 public class SeriesFilter<T extends Comparable<T>> implements UnaryQueryFilter {
     private TimeValuePairFilterVisitor<Boolean> timeValuePairFilterVisitor;
-    private SeriesDescriptor seriesDescriptor;
+    private Path seriesPath;
     private Filter<T> filter;
 
-    public SeriesFilter(SeriesDescriptor seriesDescriptor, Filter<T> filter) {
-        this.seriesDescriptor = seriesDescriptor;
+    public SeriesFilter(Path seriesDescriptor, Filter<T> filter) {
+        this.seriesPath = seriesDescriptor;
         this.filter = filter;
         timeValuePairFilterVisitor = new TimeValuePairFilterVisitorImpl();
     }
@@ -40,10 +40,10 @@ public class SeriesFilter<T extends Comparable<T>> implements UnaryQueryFilter {
     }
 
     public String toString() {
-        return "[" + seriesDescriptor + ":" + filter + "]";
+        return "[" + seriesPath + ":" + filter + "]";
     }
 
-    public SeriesDescriptor getSeriesDescriptor() {
-        return this.seriesDescriptor;
+    public Path getSeriesPath() {
+        return this.seriesPath;
     }
 }

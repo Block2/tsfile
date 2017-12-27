@@ -24,12 +24,12 @@ import java.util.List;
 /**
  * @author Jinrui Zhang
  */
-public class QueryExecutorWithQueryFilterImpl implements QueryExecutor {
+public class QueryWithQueryFilterExecutorImpl implements QueryExecutor {
 
     private SeriesChunkLoader seriesChunkLoader;
     private MetadataQuerier metadataQuerier;
 
-    public QueryExecutorWithQueryFilterImpl(SeriesChunkLoader seriesChunkLoader, MetadataQuerier metadataQuerier) {
+    public QueryWithQueryFilterExecutorImpl(SeriesChunkLoader seriesChunkLoader, MetadataQuerier metadataQuerier) {
         this.seriesChunkLoader = seriesChunkLoader;
         this.metadataQuerier = metadataQuerier;
     }
