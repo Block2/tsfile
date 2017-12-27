@@ -3,7 +3,6 @@ package cn.edu.tsinghua.tsfile.timeseries.readV2.query.executor;
 import cn.edu.tsinghua.tsfile.common.conf.TSFileDescriptor;
 import cn.edu.tsinghua.tsfile.common.utils.Binary;
 import cn.edu.tsinghua.tsfile.common.utils.ITsRandomAccessFileReader;
-import cn.edu.tsinghua.tsfile.file.metadata.enums.TSDataType;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.TimeFilter;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.ValueFilter;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.basic.Filter;
@@ -15,7 +14,6 @@ import cn.edu.tsinghua.tsfile.timeseries.filterV2.factory.FilterFactory;
 import cn.edu.tsinghua.tsfile.timeseries.read.TsRandomAccessLocalFileReader;
 import cn.edu.tsinghua.tsfile.timeseries.read.support.Path;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.TsFileGeneratorForTest;
-import cn.edu.tsinghua.tsfile.timeseries.readV2.common.SeriesDescriptor;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.controller.MetadataQuerierByFileImpl;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.controller.SeriesChunkLoader;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.controller.SeriesChunkLoaderImpl;
@@ -98,7 +96,6 @@ public class QueryExecutorTest {
     @Test
     public void queryWithoutFilter() throws IOException {
         QueryExecutor queryExecutor = new QueryWithoutFilterExecutorImpl(seriesChunkLoader, metadataQuerierByFile);
-
         QueryExpression queryExpression = QueryExpression.create()
                 .addSelectedPath(new Path("d1.s1"))
                 .addSelectedPath(new Path("d1.s2"))
@@ -124,7 +121,6 @@ public class QueryExecutorTest {
     @Test
     public void queryWithGlobalTimeFilter() throws IOException {
         QueryExecutor queryExecutor = new QueryWithGlobalTimeFilterExecutorImpl(seriesChunkLoader, metadataQuerierByFile);
-
         QueryFilter queryFilter = new GlobalTimeFilter(FilterFactory.and(TimeFilter.gtEq(1480562618100L), TimeFilter.lt(1480562618200L)));
         QueryExpression queryExpression = QueryExpression.create()
                 .addSelectedPath(new Path("d1.s1"))
