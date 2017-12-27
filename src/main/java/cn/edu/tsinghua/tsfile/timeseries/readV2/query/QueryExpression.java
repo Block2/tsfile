@@ -12,9 +12,11 @@ import java.util.List;
 public class QueryExpression {
     private List<Path> selectedSeries;
     private QueryFilter queryFilter;
+    private boolean hasQueryFilter;
 
     private QueryExpression() {
         selectedSeries = new ArrayList<>();
+        hasQueryFilter = false;
     }
 
     public static QueryExpression create() {
@@ -27,7 +29,10 @@ public class QueryExpression {
     }
 
     public QueryExpression setQueryFilter(QueryFilter queryFilter) {
-        this.queryFilter = queryFilter;
+        if (queryFilter != null) {
+            this.queryFilter = queryFilter;
+            hasQueryFilter = true;
+        }
         return this;
     }
 
@@ -48,5 +53,9 @@ public class QueryExpression {
         StringBuilder stringBuilder = new StringBuilder("\n\t[Selected Series]:").append(selectedSeries)
                 .append("\n\t[QueryFilter]:").append(queryFilter);
         return stringBuilder.toString();
+    }
+
+    public boolean hasQueryFilter() {
+        return hasQueryFilter;
     }
 }

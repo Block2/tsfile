@@ -26,15 +26,15 @@ import java.util.List;
 public class QueryFilterOptimizerTest {
 
     private QueryFilterOptimizer queryFilterOptimizer = QueryFilterOptimizer.getInstance();
-    private List<SeriesDescriptor> selectedSeries;
+    private List<Path> selectedSeries;
 
     @Before
     public void before() {
         selectedSeries = new ArrayList<>();
-        selectedSeries.add(new SeriesDescriptor(new Path("d1.s1"), TSDataType.INT32));
-        selectedSeries.add(new SeriesDescriptor(new Path("d2.s1"), TSDataType.INT64));
-        selectedSeries.add(new SeriesDescriptor(new Path("d1.s2"), TSDataType.FLOAT));
-        selectedSeries.add(new SeriesDescriptor(new Path("d1.s2"), TSDataType.DOUBLE));
+        selectedSeries.add(new Path("d1.s1"));
+        selectedSeries.add(new Path("d2.s1"));
+        selectedSeries.add(new Path("d1.s2"));
+        selectedSeries.add(new Path("d1.s2"));
     }
 
     @After
@@ -59,7 +59,6 @@ public class QueryFilterOptimizerTest {
         }
 
 
-
     }
 
     @Test
@@ -67,18 +66,15 @@ public class QueryFilterOptimizerTest {
         try {
             Filter<Long> filter1 = FilterFactory.and(FilterFactory.or(
                     ValueFilter.gt(100L), ValueFilter.lt(50L)), TimeFilter.gt(1400L));
-            SeriesFilter<Long> seriesFilter1 = new SeriesFilter<>(
-                    new SeriesDescriptor(new Path("d2.s1"), TSDataType.INT64), filter1);
+            SeriesFilter<Long> seriesFilter1 = new SeriesFilter<>(new Path("d2.s1"), filter1);
 
             Filter<Float> filter2 = FilterFactory.and(FilterFactory.or(
                     ValueFilter.gt(100.5f), ValueFilter.lt(50.6f)), TimeFilter.gt(1400L));
-            SeriesFilter<Float> seriesFilter2 = new SeriesFilter<>(
-                    new SeriesDescriptor(new Path("d1.s2"), TSDataType.INT64), filter2);
+            SeriesFilter<Float> seriesFilter2 = new SeriesFilter<>(new Path("d1.s2"), filter2);
 
             Filter<Double> filter3 = FilterFactory.or(FilterFactory.or(
                     ValueFilter.gt(100.5), ValueFilter.lt(50.6)), TimeFilter.gt(1400L));
-            SeriesFilter<Double> seriesFilter3 = new SeriesFilter<>(
-                    new SeriesDescriptor(new Path("d2.s2"), TSDataType.INT64), filter3);
+            SeriesFilter<Double> seriesFilter3 = new SeriesFilter<>(new Path("d2.s2"), filter3);
 
             QueryFilter queryFilter = QueryFilterFactory.and(QueryFilterFactory.or(seriesFilter1, seriesFilter2), seriesFilter3);
             Assert.assertEquals(true, queryFilter.toString().equals(
@@ -92,16 +88,13 @@ public class QueryFilterOptimizerTest {
     @Test
     public void testOneTimeAndSeries() {
         Filter<Long> filter1 = FilterFactory.or(ValueFilter.gt(100L), ValueFilter.lt(50L));
-        SeriesFilter<Long> seriesFilter1 = new SeriesFilter<>(
-                new SeriesDescriptor(new Path("d2.s1"), TSDataType.INT64), filter1);
+        SeriesFilter<Long> seriesFilter1 = new SeriesFilter<>(new Path("d2.s1"), filter1);
 
         Filter<Float> filter2 = FilterFactory.or(ValueFilter.gt(100.5f), ValueFilter.lt(50.6f));
-        SeriesFilter<Float> seriesFilter2 = new SeriesFilter<>(
-                new SeriesDescriptor(new Path("d1.s2"), TSDataType.INT64), filter2);
+        SeriesFilter<Float> seriesFilter2 = new SeriesFilter<>(new Path("d1.s2"), filter2);
 
         Filter<Double> filter3 = FilterFactory.or(ValueFilter.gt(100.5), ValueFilter.lt(50.6));
-        SeriesFilter<Double> seriesFilter3 = new SeriesFilter<>(
-                new SeriesDescriptor(new Path("d2.s2"), TSDataType.INT64), filter3);
+        SeriesFilter<Double> seriesFilter3 = new SeriesFilter<>(new Path("d2.s2"), filter3);
 
         Filter timeFilter = TimeFilter.lt(14001234L);
         QueryFilter globalTimeFilter = new GlobalTimeFilter(timeFilter);
@@ -121,15 +114,15 @@ public class QueryFilterOptimizerTest {
     public void testOneTimeOrSeries() {
         Filter<Long> filter1 = FilterFactory.or(ValueFilter.gt(100L), ValueFilter.lt(50L));
         SeriesFilter<Long> seriesFilter1 = new SeriesFilter<>(
-                new SeriesDescriptor(new Path("d2.s1"), TSDataType.INT64), filter1);
+                new Path("d2.s1"), filter1);
 
         Filter<Float> filter2 = FilterFactory.or(ValueFilter.gt(100.5f), ValueFilter.lt(50.6f));
         SeriesFilter<Float> seriesFilter2 = new SeriesFilter<>(
-                new SeriesDescriptor(new Path("d1.s2"), TSDataType.INT64), filter2);
+                new Path("d1.s2"), filter2);
 
         Filter<Double> filter3 = FilterFactory.or(ValueFilter.gt(100.5), ValueFilter.lt(50.6));
         SeriesFilter<Double> seriesFilter3 = new SeriesFilter<>(
-                new SeriesDescriptor(new Path("d2.s2"), TSDataType.INT64), filter3);
+                new Path("d2.s2"), filter3);
         Filter timeFilter = TimeFilter.lt(14001234L);
         QueryFilter globalTimeFilter = new GlobalTimeFilter(timeFilter);
         QueryFilter queryFilter = QueryFilterFactory.or(QueryFilterFactory.or(seriesFilter1, seriesFilter2), globalTimeFilter);
@@ -147,18 +140,15 @@ public class QueryFilterOptimizerTest {
     }
 
     @Test
-    public void testTwoTimeCombine(){
+    public void testTwoTimeCombine() {
         Filter<Long> filter1 = FilterFactory.or(ValueFilter.gt(100L), ValueFilter.lt(50L));
-        SeriesFilter<Long> seriesFilter1 = new SeriesFilter<>(
-                new SeriesDescriptor(new Path("d2.s1"), TSDataType.INT64), filter1);
+        SeriesFilter<Long> seriesFilter1 = new SeriesFilter<>(new Path("d2.s1"), filter1);
 
         Filter<Float> filter2 = FilterFactory.or(ValueFilter.gt(100.5f), ValueFilter.lt(50.6f));
-        SeriesFilter<Float> seriesFilter2 = new SeriesFilter<>(
-                new SeriesDescriptor(new Path("d1.s2"), TSDataType.INT64), filter2);
+        SeriesFilter<Float> seriesFilter2 = new SeriesFilter<>(new Path("d1.s2"), filter2);
 
         Filter<Double> filter3 = FilterFactory.or(ValueFilter.gt(100.5), ValueFilter.lt(50.6));
-        SeriesFilter<Double> seriesFilter3 = new SeriesFilter<>(
-                new SeriesDescriptor(new Path("d2.s2"), TSDataType.INT64), filter3);
+        SeriesFilter<Double> seriesFilter3 = new SeriesFilter<>(new Path("d2.s2"), filter3);
 
         QueryFilter globalTimeFilter1 = new GlobalTimeFilter(TimeFilter.lt(14001234L));
         QueryFilter globalTimeFilter2 = new GlobalTimeFilter(TimeFilter.gt(14001000L));

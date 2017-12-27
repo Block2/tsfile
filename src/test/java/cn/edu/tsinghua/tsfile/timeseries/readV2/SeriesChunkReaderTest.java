@@ -133,7 +133,7 @@ public class SeriesChunkReaderTest {
                     FilterFactory.and(TimeFilter.gtEq(timeLeft), TimeFilter.ltEq(timeRight)),
                     FilterFactory.and(ValueFilter.gtEq(valueLeft), ValueFilter.ltEq(valueRight))
             );
-            SeriesFilter<Long> seriesFilter = new SeriesFilter(new SeriesDescriptor(new Path("d1.s1"), TSDataType.INT64), filter);
+            SeriesFilter<Long> seriesFilter = new SeriesFilter(new Path("d1.s1"), filter);
             ByteArrayInputStream seriesChunkInputStream = getSeriesChunk();
             SeriesChunkReader seriesChunkReader = new SeriesChunkReaderWithFilterImpl(seriesChunkInputStream, TSDataType.INT64,
                     getCompressionTypeName(), seriesFilter.getFilter());

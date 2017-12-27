@@ -20,13 +20,12 @@ import cn.edu.tsinghua.tsfile.timeseries.readV2.controller.MetadataQuerierByFile
 import cn.edu.tsinghua.tsfile.timeseries.readV2.controller.SeriesChunkLoader;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.controller.SeriesChunkLoaderImpl;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.datatype.RowRecord;
-import cn.edu.tsinghua.tsfile.timeseries.readV2.datatype.TimeValuePair;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.query.QueryDataSet;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.query.QueryExecutor;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.query.QueryExpression;
-import cn.edu.tsinghua.tsfile.timeseries.readV2.query.impl.QueryExecutorWithGlobalTimeFilterImpl;
-import cn.edu.tsinghua.tsfile.timeseries.readV2.query.impl.QueryExecutorWithQueryFilterImpl;
-import cn.edu.tsinghua.tsfile.timeseries.readV2.query.impl.QueryExecutorWithoutFilterImpl;
+import cn.edu.tsinghua.tsfile.timeseries.readV2.query.impl.QueryWithGlobalTimeFilterExecutorImpl;
+import cn.edu.tsinghua.tsfile.timeseries.readV2.query.impl.QueryWithQueryFilterExecutorImpl;
+import cn.edu.tsinghua.tsfile.timeseries.readV2.query.impl.QueryWithoutFilterExecutorImpl;
 import cn.edu.tsinghua.tsfile.timeseries.write.exception.WriteProcessException;
 import org.junit.After;
 import org.junit.Assert;
@@ -46,7 +45,7 @@ public class QueryExecutorTest {
     private MetadataQuerierByFileImpl metadataQuerierByFile;
     private SeriesChunkLoader seriesChunkLoader;
     private int rowCount = 10000;
-    private QueryExecutorWithQueryFilterImpl queryExecutorWithQueryFilter;
+    private QueryWithQueryFilterExecutorImpl queryExecutorWithQueryFilter;
 
     @Before
     public void before() throws InterruptedException, WriteProcessException, IOException {
@@ -55,7 +54,7 @@ public class QueryExecutorTest {
         randomAccessFileReader = new TsRandomAccessLocalFileReader(FILE_PATH);
         metadataQuerierByFile = new MetadataQuerierByFileImpl(randomAccessFileReader);
         seriesChunkLoader = new SeriesChunkLoaderImpl(randomAccessFileReader);
-        queryExecutorWithQueryFilter = new QueryExecutorWithQueryFilterImpl(seriesChunkLoader, metadataQuerierByFile);
+        queryExecutorWithQueryFilter = new QueryWithQueryFilterExecutorImpl(seriesChunkLoader, metadataQuerierByFile);
     }
 
     @After
@@ -71,8 +70,8 @@ public class QueryExecutorTest {
 //        Filter<Integer> filter3 = FilterFactory.and(TimeFilter.gtEq(1480562618000L), TimeFilter.ltEq(1480562618100L));
 
         QueryFilter queryFilter = QueryFilterFactory.and(
-                new SeriesFilter<>(new SeriesDescriptor(new Path("d1.s1"), TSDataType.INT32), filter),
-                new SeriesFilter<>(new SeriesDescriptor(new Path("d1.s4"), TSDataType.TEXT), filter2)
+                new SeriesFilter<>(new Path("d1.s1"), filter),
+                new SeriesFilter<>(new Path("d1.s4"), filter2)
         );
 
 //        QueryFilter queryFilter = new SeriesFilter<>(new SeriesDescriptor(new Path("d1.s1"), TSDataType.INT32), filter);
@@ -98,7 +97,7 @@ public class QueryExecutorTest {
 
     @Test
     public void queryWithoutFilter() throws IOException {
-        QueryExecutor queryExecutor = new QueryExecutorWithoutFilterImpl(seriesChunkLoader, metadataQuerierByFile);
+        QueryExecutor queryExecutor = new QueryWithoutFilterExecutorImpl(seriesChunkLoader, metadataQuerierByFile);
 
         QueryExpression queryExpression = QueryExpression.create()
                 .addSelectedPath(new Path("d1.s1"))
@@ -124,7 +123,7 @@ public class QueryExecutorTest {
 
     @Test
     public void queryWithGlobalTimeFilter() throws IOException {
-        QueryExecutor queryExecutor = new QueryExecutorWithGlobalTimeFilterImpl(seriesChunkLoader, metadataQuerierByFile);
+        QueryExecutor queryExecutor = new QueryWithGlobalTimeFilterExecutorImpl(seriesChunkLoader, metadataQuerierByFile);
 
         QueryFilter queryFilter = new GlobalTimeFilter(FilterFactory.and(TimeFilter.gtEq(1480562618100L), TimeFilter.lt(1480562618200L)));
         QueryExpression queryExpression = QueryExpression.create()
