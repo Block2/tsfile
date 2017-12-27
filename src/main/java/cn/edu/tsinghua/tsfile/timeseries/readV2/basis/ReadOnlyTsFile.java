@@ -32,5 +32,9 @@ public class ReadOnlyTsFile {
         return queryExecutorRouter.execute(queryExpression);
     }
 
+    public void close() throws IOException {
+        randomAccessFileReader.close();
+    }
+
 
 }
