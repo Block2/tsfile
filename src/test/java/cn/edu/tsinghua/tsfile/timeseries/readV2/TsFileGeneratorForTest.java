@@ -214,7 +214,7 @@ public class TsFileGeneratorForTest {
         endTime = System.currentTimeMillis();
         LOG.info("write total:{},use time:{}s", lineCount, (endTime - startTime) / 1000);
         LOG.info("src file size:{}GB", FileUtils.getLocalFileByte(inputDataFile, Unit.GB));
-        LOG.info("src file size:{}MB", FileUtils.getLocalFileByte(outputDataFile, Unit.MB));
+        LOG.info("out file size:{}MB", FileUtils.getLocalFileByte(outputDataFile, Unit.MB));
     }
 
     static private Scanner getDataFile(String path) {
