@@ -34,8 +34,13 @@ public abstract class SeriesReaderFromSingleFile implements SeriesReader {
         }
         while ((currentReadSeriesChunkIndex + 1) < seriesChunkDescriptorList.size()) {
             if (!seriesChunkReaderInitialized) {
-                initSeriesChunkReader(seriesChunkDescriptorList.get(++currentReadSeriesChunkIndex));
-                seriesChunkReaderInitialized = true;
+                SeriesChunkDescriptor seriesChunkDescriptor = seriesChunkDescriptorList.get(++currentReadSeriesChunkIndex);
+                if (seriesChunkSatisfied(seriesChunkDescriptor)) {
+                    initSeriesChunkReader(seriesChunkDescriptor);
+                    seriesChunkReaderInitialized = true;
+                } else {
+                    continue;
+                }
             }
             if (seriesChunkReader.hasNext()) {
                 return true;
@@ -57,4 +62,6 @@ public abstract class SeriesReaderFromSingleFile implements SeriesReader {
     }
 
     protected abstract void initSeriesChunkReader(SeriesChunkDescriptor seriesChunkDescriptor) throws IOException;
+
+    protected abstract boolean seriesChunkSatisfied(SeriesChunkDescriptor seriesChunkDescriptor);
 }

@@ -78,8 +78,8 @@ public class SeriesReaderByTimestampTest {
 
         for (TimeValuePair timeValuePair : timeValuePairList) {
             TsPrimitiveType value = seriesReaderFromSingleFileByTimestamp.getValueInTimestamp(timeValuePair.getTimestamp());
-            System.out.println(timeValuePair + "|" + value);
             Assert.assertEquals(timeValuePair.getValue(), value);
+            count ++;
         }
         long endTimestamp = System.currentTimeMillis();
         System.out.println("SeriesReadWithFilterTest. [Time used]: " + (endTimestamp - startTimestamp) +

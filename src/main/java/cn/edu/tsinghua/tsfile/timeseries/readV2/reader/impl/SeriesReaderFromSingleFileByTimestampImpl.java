@@ -17,9 +17,11 @@ public class SeriesReaderFromSingleFileByTimestampImpl extends SeriesReaderFromS
     private long currentTimestamp;
     private boolean hasCacheLastTimeValuePair;
     private TimeValuePair cachedTimeValuePair;
+    private int nextSeriesChunkIndex;
 
     public SeriesReaderFromSingleFileByTimestampImpl(SeriesChunkLoader seriesChunkLoader, List<SeriesChunkDescriptor> seriesChunkDescriptorList) {
         super(seriesChunkLoader, seriesChunkDescriptorList);
+        nextSeriesChunkIndex = 0;
     }
 
     @Override
@@ -27,11 +29,23 @@ public class SeriesReaderFromSingleFileByTimestampImpl extends SeriesReaderFromS
         if (seriesChunkReaderInitialized && seriesChunkReader.hasNext()) {
             return true;
         }
-        while ((currentReadSeriesChunkIndex + 1) < seriesChunkDescriptorList.size()) {
+        while (nextSeriesChunkIndex < seriesChunkDescriptorList.size()) {
             if (!seriesChunkReaderInitialized) {
-                initSeriesChunkReader(seriesChunkDescriptorList.get(++currentReadSeriesChunkIndex));
-                ((SeriesChunkReaderByTimestampImpl) seriesChunkReader).setCurrentTimestamp(currentTimestamp);
-                seriesChunkReaderInitialized = true;
+                SeriesChunkDescriptor seriesChunkDescriptor = seriesChunkDescriptorList.get(nextSeriesChunkIndex);
+                if (seriesChunkSatisfied(seriesChunkDescriptor)) {
+                    initSeriesChunkReader(seriesChunkDescriptor);
+                    ((SeriesChunkReaderByTimestampImpl) seriesChunkReader).setCurrentTimestamp(currentTimestamp);
+                    seriesChunkReaderInitialized = true;
+                    nextSeriesChunkIndex++;
+                } else {
+                    long minTimestamp = seriesChunkDescriptor.getMinTimestamp();
+                    long maxTimestamp = seriesChunkDescriptor.getMaxTimestamp();
+                    if (maxTimestamp < currentTimestamp) {
+                        continue;
+                    } else if (minTimestamp > currentTimestamp) {
+                        return false;
+                    }
+                }
             }
             if (seriesChunkReader.hasNext()) {
                 return true;
@@ -79,5 +93,15 @@ public class SeriesReaderFromSingleFileByTimestampImpl extends SeriesReaderFromS
         this.seriesChunkReader = new SeriesChunkReaderByTimestampImpl(memSeriesChunk.getSeriesChunkBodyStream()
                 , seriesChunkDescriptor.getDataType(),
                 seriesChunkDescriptor.getCompressionTypeName());
+    }
+
+    @Override
+    protected boolean seriesChunkSatisfied(SeriesChunkDescriptor seriesChunkDescriptor) {
+        long minTimestamp = seriesChunkDescriptor.getMinTimestamp();
+        long maxTimestamp = seriesChunkDescriptor.getMaxTimestamp();
+        if (minTimestamp <= currentTimestamp && currentTimestamp <= maxTimestamp) {
+            return true;
+        }
+        return false;
     }
 }

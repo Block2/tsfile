@@ -1,8 +1,10 @@
 package cn.edu.tsinghua.tsfile.timeseries.readV2.query.efficiency;
 
 import cn.edu.tsinghua.tsfile.common.conf.TSFileDescriptor;
+import cn.edu.tsinghua.tsfile.timeseries.filterV2.TimeFilter;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.ValueFilter;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.QueryFilter;
+import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.impl.GlobalTimeFilter;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.impl.SeriesFilter;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.factory.FilterFactory;
 import cn.edu.tsinghua.tsfile.timeseries.read.TsRandomAccessLocalFileReader;
@@ -49,24 +51,28 @@ public class ReadVersionCompareTest {
     @Test
     public void newVersion() throws IOException {
 
-        QueryFilter queryFilter = new SeriesFilter<>(new Path("d1.s1"), FilterFactory.and(
-                ValueFilter.gt(0), ValueFilter.lt(100000)));
+//        QueryFilter queryFilter = new SeriesFilter<>(new Path("d1.s1"), FilterFactory.and(
+//                ValueFilter.gt(0), ValueFilter.lt(100)));
+        QueryFilter queryFilter = new GlobalTimeFilter(FilterFactory.and(
+                TimeFilter.gtEq(1480562618000L), TimeFilter.lt(1480562618010L)));
 
         QueryExpression queryExpression = QueryExpression.create()
-                .addSelectedPath(new Path("d1.s1"));
-//                .setQueryFilter(queryFilter);
+                .addSelectedPath(new Path("d1.s1"))
+                .setQueryFilter(queryFilter);
 
         long startTime = System.currentTimeMillis();
         int count = 0;
         ReadOnlyTsFile tsFile = new ReadOnlyTsFile(new TsRandomAccessLocalFileReader(filePath));
+        System.out.println("Time used: " + (System.currentTimeMillis() - startTime));
         QueryDataSet queryDataSet = tsFile.query(queryExpression);
+        System.out.println("Time used: " + (System.currentTimeMillis() - startTime));
         while (queryDataSet.hasNext()) {
             RowRecord rowRecord = queryDataSet.next();
 //            System.out.println(rowRecord);
             count++;
         }
         long endTime = System.currentTimeMillis();
-        System.out.println("Read count: " + count + ". Time used :" + (endTime - startTime) + "ms");
+        System.out.println("[New Version]Read count: " + count + ". Time used :" + (endTime - startTime) + "ms");
 
         tsFile.close();
     }

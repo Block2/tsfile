@@ -23,4 +23,9 @@ public class SeriesReaderFromSingleFileWithoutFilterImpl extends SeriesReaderFro
                 memSeriesChunk.getSeriesChunkDescriptor().getDataType(),
                 memSeriesChunk.getSeriesChunkDescriptor().getCompressionTypeName());
     }
+
+    @Override
+    protected boolean seriesChunkSatisfied(SeriesChunkDescriptor seriesChunkDescriptor) {
+        return true;
+    }
 }

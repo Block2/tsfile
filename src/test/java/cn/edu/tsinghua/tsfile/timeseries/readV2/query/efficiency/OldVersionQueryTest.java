@@ -30,14 +30,15 @@ public class OldVersionQueryTest {
                 FilterFactory.gtEq(FilterFactory.intFilterSeries("d1", "s1", FilterSeriesType.VALUE_FILTER),
                         0, false),
                 FilterFactory.ltEq(FilterFactory.intFilterSeries("d1", "s1", FilterSeriesType.VALUE_FILTER),
-                        100000, false)
+                        100, false)
         );
 
         long startTime = System.currentTimeMillis();
         int count = 0;
         TsFile tsFile = new TsFile(new TsRandomAccessLocalFileReader(filePath));
-//        QueryDataSet queryDataSet = tsFile.query(paths, null, valueFilter);
-        QueryDataSet queryDataSet = tsFile.query(paths, null, null);
+        System.out.println("Time used: " + (System.currentTimeMillis() - startTime));
+        QueryDataSet queryDataSet = tsFile.query(paths, null, valueFilter);
+//        QueryDataSet queryDataSet = tsFile.query(paths, null, null);
         while (queryDataSet.hasNextRecord()) {
             RowRecord record = queryDataSet.getNextRecord();
             count++;
