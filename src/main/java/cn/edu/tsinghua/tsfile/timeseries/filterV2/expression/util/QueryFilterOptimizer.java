@@ -11,7 +11,6 @@ import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.impl.QueryFilterFac
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.impl.SeriesFilter;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.factory.FilterFactory;
 import cn.edu.tsinghua.tsfile.timeseries.read.support.Path;
-import cn.edu.tsinghua.tsfile.timeseries.readV2.common.SeriesDescriptor;
 
 import java.util.List;
 
@@ -19,8 +18,10 @@ import java.util.List;
  * Created by zhangjinrui on 2017/12/19.
  */
 public class QueryFilterOptimizer {
-
-    private static final QueryFilterOptimizer INSTANCE = new QueryFilterOptimizer();
+    
+    private static class QueryFilterOptimizerHelper {
+        private static final QueryFilterOptimizer INSTANCE = new QueryFilterOptimizer();
+    }
 
     private QueryFilterOptimizer() {
 
@@ -47,6 +48,8 @@ public class QueryFilterOptimizer {
                     midRet = QueryFilterFactory.and(regularLeft, regularRight);
                 } else if (relation == QueryFilterType.OR) {
                     midRet = QueryFilterFactory.or(regularLeft, regularRight);
+                } else {
+                    throw new UnsupportedOperationException("unsupported queryFilter type: " + relation);
                 }
                 if (midRet.getLeft().getType() == QueryFilterType.GLOBAL_TIME || midRet.getRight().getType() == QueryFilterType.GLOBAL_TIME) {
                     return convertGlobalTimeFilter(midRet, selectedSeries);
@@ -115,6 +118,6 @@ public class QueryFilterOptimizer {
     }
 
     public static QueryFilterOptimizer getInstance() {
-        return INSTANCE;
+        return QueryFilterOptimizerHelper.INSTANCE;
     }
 }
