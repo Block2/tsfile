@@ -2,14 +2,11 @@ package cn.edu.tsinghua.tsfile.timeseries.readV2.reader.impl;
 
 import cn.edu.tsinghua.tsfile.common.constant.StatisticConstant;
 import cn.edu.tsinghua.tsfile.timeseries.filter.utils.DigestForFilter;
-import cn.edu.tsinghua.tsfile.timeseries.filter.utils.StrDigestForFilter;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.basic.Filter;
-import cn.edu.tsinghua.tsfile.timeseries.filterV2.expression.impl.SeriesFilter;
 import cn.edu.tsinghua.tsfile.timeseries.filterV2.visitor.impl.DigestFilterVisitor;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.common.MemSeriesChunk;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.common.SeriesChunkDescriptor;
 import cn.edu.tsinghua.tsfile.timeseries.readV2.controller.SeriesChunkLoader;
-import cn.edu.tsinghua.tsfile.timeseries.readV2.controller.SeriesChunkLoaderImpl;
 
 import java.io.IOException;
 import java.util.List;
@@ -41,8 +38,7 @@ public class SeriesReaderFromSingleFileWithFilterImpl extends SeriesReaderFromSi
     protected boolean seriesChunkSatisfied(SeriesChunkDescriptor seriesChunkDescriptor) {
         DigestForFilter timeDigest = new DigestForFilter(seriesChunkDescriptor.getMinTimestamp(),
                 seriesChunkDescriptor.getMaxTimestamp());
-        //TODO: Using ByteBuffer as min/max is best
-        DigestForFilter valueDigest = new StrDigestForFilter(
+        DigestForFilter valueDigest = new DigestForFilter(
                 seriesChunkDescriptor.getValueDigest().getStatistics().get(StatisticConstant.MIN_VALUE),
                 seriesChunkDescriptor.getValueDigest().getStatistics().get(StatisticConstant.MAX_VALUE),
                 seriesChunkDescriptor.getDataType());

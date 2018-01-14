@@ -37,11 +37,10 @@ public class SeriesChunkReaderWithFilterImpl extends SeriesChunkReader {
         DigestForFilter timeDigest = new DigestForFilter(pageHeader.data_page_header.getMin_timestamp(),
                 pageHeader.data_page_header.getMax_timestamp());
         //TODO: Using ByteBuffer as min/max is best
-        DigestForFilter valueDigest = new StrDigestForFilter(
+        DigestForFilter valueDigest = new DigestForFilter(
                 pageHeader.data_page_header.digest.getStatistics().get(StatisticConstant.MIN_VALUE),
                 pageHeader.data_page_header.digest.getStatistics().get(StatisticConstant.MAX_VALUE),
                 dataType);
-//                pageHeader.data_page_header.digest.min, pageHeader.data_page_header.digest.max, dataType);
         return digestFilterVisitor.satisfy(timeDigest, valueDigest, filter);
     }
 
